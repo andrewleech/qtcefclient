@@ -6,6 +6,8 @@ Release/
 include/
 Resources/
 libcef_dll/
+cef_binary_win32/
+cef_binary_win64/
 
 # Qt
 GeneratedFiles/
