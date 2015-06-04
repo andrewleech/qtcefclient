@@ -205,7 +205,7 @@ bool QCefWebView::CreateBrowser(const QSize& size) {
   CefBrowserSettings settings;
 
   // By default, as a child window.
-  info.SetAsChild(this->winId(), rect);
+  info.SetAsChild((HWND)this->winId(), rect);
 
   g_handler->set_listener(this);
 

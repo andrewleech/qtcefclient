@@ -13,8 +13,9 @@ class MainWindow : public QMainWindow {
   Q_OBJECT
 
  public:
-  MainWindow(QWidget *parent = 0, Qt::WFlags flags = 0);
-  ~MainWindow();
+	 MainWindow(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+	 ~MainWindow();
+	 bool is_kiosk();
 
  protected:
   virtual void closeEvent(QCloseEvent*);
@@ -39,11 +40,13 @@ class MainWindow : public QMainWindow {
   void on_actionSendMessage_triggered();
   void on_actionLoadHtml_triggered();
 
+
  private:
   void SetupUi();
 
   Ui::MainWindow *ui_;
   QCefWebView* webview_;
+  bool kiosk_;
 
   Q_DISABLE_COPY(MainWindow)
 };

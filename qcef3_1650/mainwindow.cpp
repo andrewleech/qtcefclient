@@ -5,22 +5,49 @@
 #include <QTextStream>
 #include "cefclient/cefclient.h"
 #include "cefclient/client_app_js.h"
+#include "include/cef_command_line.h"
 
 #include <QDebug>
 
-MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
+MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     : QMainWindow(parent, flags),
       ui_(new Ui::MainWindow) {
   qDebug() << __FUNCTION__;
   ui_->setupUi(this);
   SetupUi();
 
-  webview_->load(QUrl("http://www.google.com/"));
+  std::string url;
+
+  // Check if a "--url=" value was provided via the command-line. If so, use
+  // that instead of the default URL.
+  CefRefPtr<CefCommandLine> command_line = CefCommandLine::GetGlobalCommandLine();
+  url = command_line->GetSwitchValue("url");
+  kiosk_ = command_line->HasSwitch("kiosk");
+  if (url.empty())
+	  url = "http://www.google.com";
+  
+  if (kiosk_) {
+	  /*ui_->centralwidget->setVisible(false);*/
+	  ui_->backButton->setVisible(false);
+	  ui_->forwardButton->setVisible(false);
+	  ui_->lineEdit->setVisible(false);
+	  ui_->reloadButton->setVisible(false);
+	  ui_->stopButton->setVisible(false);
+
+	  ui_->menubar->setVisible(false);
+	  ui_->statusbar->setVisible(false);
+  }
+  
+  webview_->load(QUrl(QString::fromStdString(url)));
 }
 
 MainWindow::~MainWindow() {
   qDebug() << __FUNCTION__;
   delete ui_;
+}
+
+bool MainWindow::is_kiosk() {
+	return kiosk_;
 }
 
 void MainWindow::closeEvent(QCloseEvent* e) {

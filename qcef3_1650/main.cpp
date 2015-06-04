@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include <QApplication>
+#include <QCommandLineParser>
 #include "cefclient/cefclient.h"
 
 #include <windows.h>
@@ -30,21 +31,41 @@ BOOL IsWow64() {
 }
 
 int main(int argc, char *argv[]) {
-  QApplication a(argc, argv);
-  int result = CefInit(argc, argv);
-  if (result >= 0)
-    return result;
+	QApplication a(argc, argv);
+	//QCoreApplication::setApplicationName("cefclient");
+	//QCoreApplication::setApplicationVersion("1.0");
+	
+	//QCommandLineParser parser;
+	//parser.setApplicationDescription("cefclient");
+	//parser.addHelpOption();
+	//parser.addVersionOption();
+	//parser.addPositionalArgument("url", QCoreApplication::translate("main", "url to load"));
+	//QCommandLineOption kiosk("kiosk", QCoreApplication::translate("main", "load full screen"));
+	//parser.addPositionalArgument("url", "url to load");
+	//QCommandLineOption kiosk("kiosk", "load full screen");
+	//parser.addOption(kiosk);
 
-  // Load flash system plug-in on Windows.
-  CefLoadPlugins(IsWow64());
+	//parser.process(a);
 
-  MainWindow w;
-  w.show();
+	int result = CefInit(argc, argv);
+	if (result >= 0)
+		return result;
+	
+	// Load flash system plug-in on Windows.
+	CefLoadPlugins(IsWow64());
 
-  //a.setQuitOnLastWindowClosed(false);
-  result = a.exec();
+	MainWindow w;
+	if (w.is_kiosk()){
+		w.showFullScreen();
+	}
+	else {
+		w.show();
+	}
 
-  CefQuit();
+	//a.setQuitOnLastWindowClosed(false);
+	result = a.exec();
 
-  return result;
+	CefQuit();
+
+	return result;
 }

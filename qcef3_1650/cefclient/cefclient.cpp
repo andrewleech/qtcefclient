@@ -57,7 +57,7 @@ int CefInit(int &argc, char **argv) {
 #endif
 
   // Initialize CEF.
-  CefInitialize(main_args, settings, app.get());
+  CefInitialize(main_args, settings, app.get(), NULL);
 
   g_handler = new ClientHandler();
 

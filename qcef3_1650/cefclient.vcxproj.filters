@@ -56,9 +56,6 @@
     <ClCompile Include="cefclient\cefclient_qt.cpp">
       <Filter>cefclient</Filter>
     </ClCompile>
-    <ClCompile Include="cefclient\client_handler.cpp">
-      <Filter>cefclient</Filter>
-    </ClCompile>
     <ClCompile Include="cefclient\client_handler_qt.cpp">
       <Filter>cefclient</Filter>
     </ClCompile>
@@ -78,6 +75,9 @@
       <Filter>cefclient</Filter>
     </ClCompile>
     <ClCompile Include="cefclient\message_event.cpp">
+      <Filter>cefclient</Filter>
+    </ClCompile>
+    <ClCompile Include="cefclient\client_handler.cpp">
       <Filter>cefclient</Filter>
     </ClCompile>
   </ItemGroup>
@@ -497,5 +497,20 @@
     <ClInclude Include="cefclient\client_app_js.h">
       <Filter>cefclient</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource1.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Geri.ico" />
+    <Image Include="icon1.ico" />
+    <Image Include="icon2.ico" />
+    <Image Include="cef3.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="cefclient.rc" />
   </ItemGroup>
 </Project>

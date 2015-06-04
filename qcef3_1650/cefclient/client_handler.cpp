@@ -15,7 +15,9 @@ namespace {
 
 // Custom menu command Ids.
 enum client_menu_ids {
-  CLIENT_ID_SHOW_DEVTOOLS = MENU_ID_USER_FIRST,
+	CLIENT_ID_SHOW_DEVTOOLS = MENU_ID_USER_FIRST,
+	CLIENT_ID_CLOSE_DEVTOOLS,
+	CLIENT_ID_INSPECT_ELEMENT,
 };
 
 }  // namespace
@@ -82,13 +84,13 @@ void ClientHandler::OnBeforeContextMenu(
     // Add a "Show DevTools" item to all context menus.
     model->AddItem(CLIENT_ID_SHOW_DEVTOOLS, "&Show DevTools");
 
-    CefString devtools_url = browser->GetHost()->GetDevToolsURL(true);
-    if (devtools_url.empty() ||
-        m_OpenDevToolsURLs.find(devtools_url) != m_OpenDevToolsURLs.end()) {
-      // Disable the menu option if DevTools isn't enabled or if a window is
-      // already open for the current URL.
-      model->SetEnabled(CLIENT_ID_SHOW_DEVTOOLS, false);
-    }
+    //CefString devtools_url = browser->GetHost()->GetDevToolsURL(true);
+    //if (devtools_url.empty() ||
+    //    m_OpenDevToolsURLs.find(devtools_url) != m_OpenDevToolsURLs.end()) {
+    //  // Disable the menu option if DevTools isn't enabled or if a window is
+    //  // already open for the current URL.
+    //  model->SetEnabled(CLIENT_ID_SHOW_DEVTOOLS, false);
+    //}
   }
 }
 
@@ -99,9 +101,16 @@ bool ClientHandler::OnContextMenuCommand(
     int command_id,
     EventFlags event_flags) {
   switch (command_id) {
-    case CLIENT_ID_SHOW_DEVTOOLS:
-      ShowDevTools(browser);
-      return true;
+	  case CLIENT_ID_SHOW_DEVTOOLS:
+		  ShowDevTools(browser, CefPoint());
+		  return true;
+	  case CLIENT_ID_CLOSE_DEVTOOLS:
+		  CloseDevTools(browser);
+		  return true;
+	  case CLIENT_ID_INSPECT_ELEMENT:
+		  ShowDevTools(browser, CefPoint(params->GetXCoord(), params->GetYCoord()));
+		  return true;
+
     default:  // Allow default handling, if any.
       return false;
   }
@@ -143,14 +152,14 @@ bool ClientHandler::OnDragEnter(CefRefPtr<CefBrowser> browser,
   return false;
 }
 
-void ClientHandler::OnRequestGeolocationPermission(
-      CefRefPtr<CefBrowser> browser,
-      const CefString& requesting_url,
-      int request_id,
-      CefRefPtr<CefGeolocationCallback> callback) {
-  // Allow geolocation access from all websites.
-  callback->Continue(true);
-}
+//void ClientHandler::OnRequestGeolocationPermission(
+//      CefRefPtr<CefBrowser> browser,
+//      const CefString& requesting_url,
+//      int request_id,
+//      CefRefPtr<CefGeolocationCallback> callback) {
+//  // Allow geolocation access from all websites.
+//  callback->Continue(true);
+//}
 
 
 bool ClientHandler::OnPreKeyEvent(CefRefPtr<CefBrowser> browser,
@@ -179,7 +188,8 @@ bool ClientHandler::OnBeforePopup(CefRefPtr<CefBrowser> browser,
 void ClientHandler::OnAfterCreated(CefRefPtr<CefBrowser> browser) {
   REQUIRE_UI_THREAD();
 
-  AutoLock lock_scope(this);
+  //AutoLock lock_scope(this);
+
   if (!m_Browser.get())   {
     // We need to keep the main child window, but not popup windows
     m_Browser = browser;
@@ -203,7 +213,7 @@ bool ClientHandler::DoClose(CefRefPtr<CefBrowser> browser) {
   // process.
   if (m_BrowserId == browser->GetIdentifier()) {
     // Notify the browser that the parent window is about to close.
-    browser->GetHost()->ParentWindowWillClose();
+	  browser->GetHost()->CloseBrowser(false);
 
     // Set a flag to indicate that the window close should be allowed.
     m_bIsClosing = true;
@@ -320,16 +330,16 @@ CefRefPtr<CefResourceHandler> ClientHandler::GetResourceHandler(
   return NULL;
 }
 
-bool ClientHandler::OnQuotaRequest(CefRefPtr<CefBrowser> browser,
-                                   const CefString& origin_url,
-                                   int64 new_size,
-                                   CefRefPtr<CefQuotaCallback> callback) {
-  static const int64 max_size = 1024 * 1024 * 20;  // 20mb.
-
-  // Grant the quota request if the size is reasonable.
-  callback->Continue(new_size <= max_size);
-  return true;
-}
+//bool ClientHandler::OnQuotaRequest(CefRefPtr<CefBrowser> browser,
+//                                   const CefString& origin_url,
+//                                   int64 new_size,
+//                                   CefRefPtr<CefQuotaCallback> callback) {
+//  static const int64 max_size = 1024 * 1024 * 20;  // 20mb.
+//
+//  // Grant the quota request if the size is reasonable.
+//  callback->Continue(new_size <= max_size);
+//  return true;
+//}
 
 void ClientHandler::OnProtocolExecution(CefRefPtr<CefBrowser> browser,
                                         const CefString& url,
@@ -370,17 +380,32 @@ void ClientHandler::CloseAllBrowsers(bool force_close) {
   }
 }
 
-void ClientHandler::ShowDevTools(CefRefPtr<CefBrowser> browser) {
-  std::string devtools_url = browser->GetHost()->GetDevToolsURL(true);
-  if (!devtools_url.empty()) {
-    if (m_OpenDevToolsURLs.find(devtools_url) ==
-               m_OpenDevToolsURLs.end()) {
-      // Open DevTools in a popup window.
-      m_OpenDevToolsURLs.insert(devtools_url);
-      browser->GetMainFrame()->ExecuteJavaScript(
-          "window.open('" +  devtools_url + "');", "about:blank", 0);
-    }
-  }
+void ClientHandler::ShowDevTools(CefRefPtr<CefBrowser> browser,
+	const CefPoint& inspect_element_at) {
+  //std::string devtools_url = browser->GetHost()->GetDevToolsURL(true);
+  //if (!devtools_url.empty()) {
+  //  if (m_OpenDevToolsURLs.find(devtools_url) ==
+  //             m_OpenDevToolsURLs.end()) {
+  //    // Open DevTools in a popup window.
+  //    m_OpenDevToolsURLs.insert(devtools_url);
+  //    browser->GetMainFrame()->ExecuteJavaScript(
+  //        "window.open('" +  devtools_url + "');", "about:blank", 0);
+  //  }
+  //}
+
+	CefWindowInfo windowInfo;
+	CefBrowserSettings settings;
+
+#if defined(OS_WIN)
+	windowInfo.SetAsPopup(browser->GetHost()->GetWindowHandle(), "DevTools");
+#endif
+
+	browser->GetHost()->ShowDevTools(windowInfo, this, settings, inspect_element_at);
+
+}
+
+void ClientHandler::CloseDevTools(CefRefPtr<CefBrowser> browser) {
+	browser->GetHost()->CloseDevTools();
 }
 
 // static

@@ -17,5 +17,5 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
   CefRefPtr<ClientApp> app(new ClientApp);
 
   // Execute the sub-process logic. This will block until the sub-process should exit.
-  return CefExecuteProcess(main_args, app.get());
+  return CefExecuteProcess(main_args, app.get(), NULL);
 }

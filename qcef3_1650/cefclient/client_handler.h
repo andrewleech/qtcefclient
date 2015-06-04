@@ -133,11 +133,11 @@ class ClientHandler : public CefClient,
                            DragOperationsMask mask) OVERRIDE;
 
   // CefGeolocationHandler methods
-  virtual void OnRequestGeolocationPermission(
+  /*virtual void OnRequestGeolocationPermission(
       CefRefPtr<CefBrowser> browser,
       const CefString& requesting_url,
       int request_id,
-      CefRefPtr<CefGeolocationCallback> callback) OVERRIDE;
+      CefRefPtr<CefGeolocationCallback> callback) OVERRIDE;*/
 
   // CefKeyboardHandler methods
   virtual bool OnPreKeyEvent(CefRefPtr<CefBrowser> browser,
@@ -180,10 +180,10 @@ class ClientHandler : public CefClient,
       CefRefPtr<CefBrowser> browser,
       CefRefPtr<CefFrame> frame,
       CefRefPtr<CefRequest> request) OVERRIDE;
-  virtual bool OnQuotaRequest(CefRefPtr<CefBrowser> browser,
+  /*virtual bool OnQuotaRequest(CefRefPtr<CefBrowser> browser,
                               const CefString& origin_url,
                               int64 new_size,
-                              CefRefPtr<CefQuotaCallback> callback) OVERRIDE;
+                              CefRefPtr<CefQuotaCallback> callback) OVERRIDE;*/
   virtual void OnProtocolExecution(CefRefPtr<CefBrowser> browser,
                                    const CefString& url,
                                    bool& allow_os_execution) OVERRIDE;
@@ -207,7 +207,8 @@ class ClientHandler : public CefClient,
   // 'onbeforeunload' JavaScript events during window close.
   bool IsClosing() { return m_bIsClosing; }
 
-  void ShowDevTools(CefRefPtr<CefBrowser> browser);
+  void ShowDevTools(CefRefPtr<CefBrowser> browser, const CefPoint& inspect_element_at);
+  void CloseDevTools(CefRefPtr<CefBrowser> browser);
 
   // Returns the startup URL.
   std::string GetStartupURL() { return m_StartupURL; }
@@ -218,6 +219,8 @@ class ClientHandler : public CefClient,
   Listener* listener() const {
     return listener_;
   }
+
+
 
   // Number of currently existing browser windows. The application will exit
   // when the number of windows reaches 0.
@@ -262,7 +265,7 @@ class ClientHandler : public CefClient,
   // Include the default reference counting implementation.
   IMPLEMENT_REFCOUNTING(ClientHandler);
   // Include the default locking implementation.
-  IMPLEMENT_LOCKING(ClientHandler);
+  /*IMPLEMENT_LOCKING(ClientHandler);*/
 };
 
 #endif  // CEFCLIENT_CLIENT_HANDLER_H_
