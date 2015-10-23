@@ -1,0 +1,3 @@
+Place CEF binary distributions here, unzipped folders:
+cef_binary_3.2272.32.gbda8dc7_windows32
+cef_binary_3.2272.32.gbda8dc7_windows64

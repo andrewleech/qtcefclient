@@ -6,8 +6,7 @@ Release/
 include/
 Resources/
 libcef_dll/
-cef_binary_win32/
-cef_binary_win64/
+cef/cef_binary_*
 
 # Qt
 GeneratedFiles/
@@ -73,7 +72,6 @@ tmp/
 *.tlb
 *.tli
 *.tlh
-*.tmp
 *.vspscc
 .builds
 *.dotCover
@@ -176,3 +174,4 @@ pip-log.txt
 
 # Mac crap
 .DS_Store
+/.idea/
