@@ -1,11 +1,12 @@
+#include <Windows.h>
 #include "include/cef_base.h"
 #include "cefclient/client_app.h"
 
 // Program entry point function.
 int APIENTRY wWinMain(HINSTANCE hInstance,
-                     HINSTANCE hPrevInstance,
-                     LPTSTR    lpCmdLine,
-                     int       nCmdShow) {
+                      HINSTANCE hPrevInstance,
+                      PWSTR     lpCmdLine,
+                      int       nCmdShow) {
   UNREFERENCED_PARAMETER(hPrevInstance);
   UNREFERENCED_PARAMETER(lpCmdLine);
 
